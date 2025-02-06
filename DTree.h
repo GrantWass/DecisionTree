@@ -6,23 +6,24 @@
 #include <unordered_map>
 using std::string, std::vector, std::unordered_map;
 
-class DTree {
+class DTree
+{
 private:
 	vector<string> attributes;
-	DNode* root;
+	DNode *root;
 
 public:
 	DTree(vector<string> attr);
 	~DTree();
 	string levelOrderTraversal();
 
-	void train(unordered_map< string,vector<double> >& data, vector<int>& outcomes);
-	DNode* trainSubtree(DNode* parent, unordered_map< string,vector<double> > data, vector<int> outcomes, int depth);
-	
-	Decision getMinImpurity(unordered_map< string,vector<double> >& data, vector<int>& outcomes);
-	Decision getImpurity(string attr, unordered_map< string,vector<double> >& data, vector<int>& outcomes);
+	void train(unordered_map<string, vector<double>> &data, vector<int> &outcomes);
+	DNode *trainSubtree(DNode *parent, unordered_map<string, vector<double>> data, vector<int> outcomes, int depth);
 
-	int classify(vector<double>& data);
+	Decision getMinImpurity(unordered_map<string, vector<double>> &data, vector<int> &outcomes);
+	Decision getImpurity(string attr, unordered_map<string, vector<double>> &data, vector<int> &outcomes);
 
-	void clear(DNode* n);
+	int classify(vector<double> &data);
+
+	void clear(DNode *n);
 };

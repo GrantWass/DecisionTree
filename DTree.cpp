@@ -11,23 +11,28 @@
 #include <utility>
 #include <algorithm>
 #include <cmath>
+
 using std::queue, std::string, std::vector, std::unordered_map, std::stringstream;
 
 DTree::DTree(vector<string> attr) : root(nullptr), attributes(attr) {}
 
-DTree::~DTree() {
+DTree::~DTree()
+{
 	clear(root);
 }
 
-string DTree::levelOrderTraversal() {
+string DTree::levelOrderTraversal()
+{
 	stringstream ss;
-	queue<DNode*> q;
+	queue<DNode *> q;
 	q.push(root);
-	while (!q.empty()) {
-		DNode* u = q.front();
+	while (!q.empty())
+	{
+		DNode *u = q.front();
 		q.pop();
-		if (u != nullptr) {
-			ss << string(u->depth,' ') << u->data;
+		if (u != nullptr)
+		{
+			ss << string(u->depth, ' ') << u->data;
 			q.push(u->left);
 			q.push(u->right);
 		}
@@ -35,8 +40,41 @@ string DTree::levelOrderTraversal() {
 	return ss.str();
 }
 
-void DTree::train(unordered_map< string,vector<double> >& data, vector<int>& outcomes) {
+void DTree::train(unordered_map<string, vector<double>> &data, vector<int> &outcomes)
+{
 	// TODO
 }
 
-// TODO remaining functions here
+DNode *DTree::trainSubtree(DNode *parent, unordered_map<string, vector<double>> data, vector<int> outcomes, int depth)
+{
+	if (data.empty() || outcomes.empty())
+	{
+		printf("data or outcomes is empty");
+		return nullptr;
+	}
+	Decision best = getMinImpurity(data, outcomes);
+	return nullptr;
+}
+
+Decision DTree::getMinImpurity(unordered_map<string, vector<double>> &data, vector<int> &outcomes)
+{
+	// TODO
+	return Decision();
+}
+
+Decision DTree::getImpurity(string attr, unordered_map<string, vector<double>> &data, vector<int> &outcomes)
+{
+	// TODO
+	return Decision();
+}
+
+int DTree::classify(vector<double> &data)
+{
+	// TODO
+	return 0;
+}
+
+void DTree::clear(DNode *n)
+{
+	// TODO
+}
