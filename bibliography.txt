@@ -1,0 +1,83 @@
+int lowerImpurity = 0;
+int upperImpurity = 0;
+int yesCountLower = 0;
+int noCountLower = 0;
+int yesCountUpper = 0;
+int noCountUpper = 0;
+for (int i = 0; i < attributeData.size(); i++)
+{
+    if (attributeData[i] < threshold) // lower impurity
+    {
+        if (outcomes[i] == 1)
+        {
+            yesCountLower++;
+        }
+        else
+        {
+            noCountLower++;
+        }
+    }
+    else // upper impurity
+    {
+        if (outcomes[i] == 1)
+        {
+            yesCountUpper++;
+        }
+        else
+        {
+            noCountUpper++;
+        }
+    }
+}
+int overallCount = attributeData.size();
+int upperCount = yesCountUpper + noCountUpper;
+int lowerCount = yesCountLower + noCountLower;
+lowerImpurity = 1 - (yesCountLower / lowerCount) * *2 - (noCountLower / lowerCount)**2;
+upperImpurity = 1 - (yesCountUpper / upperCount) * *2 - (noCountUpper / upperCount)**2;
+// calculate weighted impurity (based on partition sizes)
+int weightedImpurity = (lowerCount / overallCount) * lowerImpurity + (upperCount / overallCount) * upperImpurity;
+
+CHATGPT RESPONSE
+
+double lowerImpurity = 0.0;
+double upperImpurity = 0.0;
+int yesCountLower = 0, noCountLower = 0;
+int yesCountUpper = 0, noCountUpper = 0;
+
+int overallCount = attributeData.size();
+if (overallCount == 0) return 0; // Avoid division by zero
+
+for (size_t i = 0; i < attributeData.size(); i++) {
+    if (attributeData[i] < threshold) { // lower impurity
+        if (outcomes[i] == 1) {
+            yesCountLower++;
+        } else {
+            noCountLower++;
+        }
+    } else { // upper impurity
+        if (outcomes[i] == 1) {
+            yesCountUpper++;
+        } else {
+            noCountUpper++;
+        }
+    }
+}
+
+int lowerCount = yesCountLower + noCountLower;
+int upperCount = yesCountUpper + noCountUpper;
+
+if (lowerCount > 0) {
+    double pYesLower = static_cast<double>(yesCountLower) / lowerCount;
+    double pNoLower = static_cast<double>(noCountLower) / lowerCount;
+    lowerImpurity = 1.0 - (pYesLower * pYesLower) - (pNoLower * pNoLower);
+}
+
+if (upperCount > 0) {
+    double pYesUpper = static_cast<double>(yesCountUpper) / upperCount;
+    double pNoUpper = static_cast<double>(noCountUpper) / upperCount;
+    upperImpurity = 1.0 - (pYesUpper * pYesUpper) - (pNoUpper * pNoUpper);
+}
+
+// Calculate weighted impurity (based on partition sizes)
+double weightedImpurity = (static_cast<double>(lowerCount) / overallCount) * lowerImpurity +
+                          (static_cast<double>(upperCount) / overallCount) * upperImpurity;

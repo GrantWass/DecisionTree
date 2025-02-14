@@ -13,4 +13,7 @@ public:
     DNode *parent;
     int depth;
     Decision data;
+
+    DNode() {}
+    DNode(Decision d, int dpth, DNode *p) : data(d), depth(dpth), parent(p), right(nullptr), left(nullptr) {}
 };
