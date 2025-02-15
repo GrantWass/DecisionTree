@@ -287,16 +287,41 @@ int DTree::classify(vector<double> &data)
 			}
 		}
 
-		// Otherwise, move to the left or right child based on threshold
-		if (attributeValue < currentNode->data.threshold)
+		if (currentNode->right == nullptr)
 		{
-			std::cout << "lower " << std::endl;
-			currentNode = currentNode->left;
+			if (attributeValue < currentNode->data.threshold)
+			{
+				currentNode = currentNode->left;
+			}
+			else
+			{
+				return currentNode->data.majorityAbove;
+			}
+		}
+		else if (currentNode->left == nullptr)
+		{
+			if (attributeValue < currentNode->data.threshold)
+			{
+				return currentNode->data.majorityBelow;
+			}
+			else
+			{
+				currentNode = currentNode->right;
+			}
 		}
 		else
 		{
-			std::cout << "higher " << std::endl;
-			currentNode = currentNode->right;
+			// Otherwise, move to the left or right child based on threshold
+			if (attributeValue < currentNode->data.threshold)
+			{
+				std::cout << "lower " << std::endl;
+				currentNode = currentNode->left;
+			}
+			else
+			{
+				std::cout << "higher " << std::endl;
+				currentNode = currentNode->right;
+			}
 		}
 	}
 
