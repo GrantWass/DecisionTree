@@ -49,6 +49,19 @@ void DTree::train(unordered_map<string, vector<double>> &data, vector<int> &outc
 
 DNode *DTree::trainSubtree(DNode *parent, unordered_map<string, vector<double>> data, vector<int> outcomes, int depth)
 {
+	// Uncertain about the base cases
+	// If all outcomes are the same
+	if (std::all_of(outcomes.begin(), outcomes.end(), [&](int val)
+					{ return val == outcomes[0]; }))
+	{
+		return nullptr;
+	}
+
+	// If there are no attributes left
+	if (data.empty())
+	{
+		return nullptr;
+	}
 	// get the best feature/attribute threshold based on impurity
 	// call getMinImpurity
 	Decision d = getMinImpurity(data, outcomes);
@@ -110,7 +123,7 @@ Decision DTree::getImpurity(string attr, unordered_map<string, vector<double>> &
 	// must also sort outcomes
 	outcomes = DHelper::sortVector(sortedIndices, outcomes);
 	// get the unique values in the attribute
-	vector<int> uniqueValues;
+	vector<double> uniqueValues;
 	for (int i = 0; i < attributeData.size(); i++)
 	{
 		if (i == 0 || attributeData[i] != attributeData[i - 1])
@@ -119,19 +132,16 @@ Decision DTree::getImpurity(string attr, unordered_map<string, vector<double>> &
 		}
 	}
 	// get a list of thresholds
-	vector<int> thresholds;
+	vector<double> thresholds;
 	for (int i = 0; i < uniqueValues.size() - 1; i++)
 	{
 		thresholds.push_back((uniqueValues[i] + uniqueValues[i + 1]) / 2);
 	}
 
-	Decision d;
-	d.attribute = attr;
-
-	// MinHeap<int> minHeap;
+	MinHeap<Decision> minHeap;
 
 	// for each threshold
-	for (int threshold : thresholds)
+	for (double threshold : thresholds)
 	{
 		double lowerImpurity = 0.0;
 		double upperImpurity = 0.0;
@@ -189,32 +199,15 @@ Decision DTree::getImpurity(string attr, unordered_map<string, vector<double>> &
 								  (static_cast<double>(upperCount) / overallCount) * upperImpurity;
 
 		// set belowMajority and aboveMajority above based on counts
+		int majorityAbove = yesCountUpper > noCountUpper ? 1 : 0;
+		int majorityBelow = yesCountLower > noCountLower ? 1 : 0;
+		Decision d(attr, threshold, weightedImpurity, majorityAbove, majorityBelow);
+		minHeap.insert(d);
 	}
 	// select the minimum threshold's impurity
-
-	// set belowMajority and aboveMajority above based on counts
+	Decision lowestImpurity = minHeap.removeMin();
 	// return decision that is best threshold and impurity
-	return Decision();
-}
-
-int DTree::classify(vector<double> &data)
-{
-
-	// This function takes in a single instance (row) from the CSV
-	//  and moves down the branches of the tree until reaching the
-	//  bottom and making a prediction based on the majorityAbove
-	//  or majorityBelow labels and the final threshold value.
-	//  TODO
-	int result = 0;
-	if (root->data.threshold < data[0]) // TODO
-	{
-		result = classifyInner(root->right, data);
-	}
-	else
-	{
-		result = classifyInner(root->left, data);
-	}
-	return result;
+	return lowestImpurity;
 }
 
 int classifyInner(DNode *n, vector<double> &data)
@@ -238,6 +231,26 @@ int classifyInner(DNode *n, vector<double> &data)
 	{
 		return classifyInner(n->left, data);
 	}
+}
+
+int DTree::classify(vector<double> &data)
+{
+
+	// This function takes in a single instance (row) from the CSV
+	//  and moves down the branches of the tree until reaching the
+	//  bottom and making a prediction based on the majorityAbove
+	//  or majorityBelow labels and the final threshold value.
+	//  TODO
+	int result = 0;
+	if (root->data.threshold < data[0]) // TODO
+	{
+		result = classifyInner(root->right, data);
+	}
+	else
+	{
+		result = classifyInner(root->left, data);
+	}
+	return result;
 }
 
 // DONE

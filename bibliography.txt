@@ -81,3 +81,7 @@ if (upperCount > 0) {
 // Calculate weighted impurity (based on partition sizes)
 double weightedImpurity = (static_cast<double>(lowerCount) / overallCount) * lowerImpurity +
                           (static_cast<double>(upperCount) / overallCount) * upperImpurity;
+
+
+Used GPT to help me understand how to handle the base case of trainSubtree. I knew it would be
+when we had no more data to split but was unsure how to implement
