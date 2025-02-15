@@ -206,15 +206,8 @@ public:
             thresholds.push_back((uniqueValues[i] + uniqueValues[i + 1]) / 2);
         }
 
-        // std::cout << "Unique values and thresholds: ";
-        // for (double val : uniqueValues)
-        //     std::cout << val << " ";
-        // std::cout << std::endl;
-
         for (double threshold : thresholds)
         {
-            // std::cout << "Threshold: " << threshold << std::endl;
-
             double lowerImpurity = 0.0;
             double upperImpurity = 0.0;
             int yesCountLower = 0, noCountLower = 0;
@@ -268,19 +261,7 @@ public:
         }
 
         Decision lowestImpurity = minHeap.removeMin();
-        // if (thresholds.size() <= 2)
-        // {
-        //     return lowestImpurity;
-        // }
-        // Decision secondLowestImpurity = minHeap.removeMin();
 
-        // // Unit tests want impurity from lowest threshold if impurities are even
-        // if (lowestImpurity.impurity == secondLowestImpurity.impurity && lowestImpurity.threshold > secondLowestImpurity.threshold)
-        // {
-        //     std::cout << "Changed Decision: " << secondLowestImpurity.impurity << " from " << lowestImpurity.threshold << std::endl;
-
-        //     return secondLowestImpurity;
-        // }
         std::cout << "Best decision based on impurity: " << lowestImpurity.impurity << " for threshold " << lowestImpurity.threshold << std::endl;
 
         return lowestImpurity;

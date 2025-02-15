@@ -122,7 +122,7 @@ Decision DTree::getMinImpurity(unordered_map<string, vector<double>> &data, vect
 	}
 
 	Decision lowestImpurity = minHeap.removeMin();
-	std::cout << "Best decision based on impurity (whole): " << lowestImpurity.impurity << " for threshold " << lowestImpurity.threshold << std::endl;
+	// std::cout << "Best decision based on impurity (whole): " << lowestImpurity.impurity << " for threshold " << lowestImpurity.threshold << std::endl;
 
 	return lowestImpurity;
 }
@@ -130,7 +130,7 @@ Decision DTree::getMinImpurity(unordered_map<string, vector<double>> &data, vect
 Decision DTree::getImpurity(string attr, unordered_map<string, vector<double>> &data, vector<int> &outcomes)
 {
 
-	std::cout << "Calculating impurity for attribute: " << attr << ", " << data[attr].size() << std::endl;
+	// std::cout << "Calculating impurity for attribute: " << attr << ", " << data[attr].size() << std::endl;
 
 	// get the impurity for a single attribute
 	std::vector<double> attributeData = data[attr];
@@ -141,20 +141,20 @@ Decision DTree::getImpurity(string attr, unordered_map<string, vector<double>> &
 	// must also sort outcomes
 	outcomes = DHelper::sortVector(sortedIndices, outcomes);
 
-	std::cout << "Attribute Data: ";
-	for (double val : attributeData)
-	{
-		std::cout << val << " ";
-	}
-	std::cout << std::endl;
+	// std::cout << "Attribute Data: ";
+	// for (double val : attributeData)
+	// {
+	// 	std::cout << val << " ";
+	// }
+	// std::cout << std::endl;
 
-	// Print outcomes
-	std::cout << "Outcomes: ";
-	for (int outcome : outcomes)
-	{
-		std::cout << outcome << " ";
-	}
-	std::cout << std::endl;
+	// // Print outcomes
+	// std::cout << "Outcomes: ";
+	// for (int outcome : outcomes)
+	// {
+	// 	std::cout << outcome << " ";
+	// }
+	// std::cout << std::endl;
 
 	MinHeap<Decision> minHeap;
 	int overallCount = attributeData.size();
@@ -236,22 +236,8 @@ Decision DTree::getImpurity(string attr, unordered_map<string, vector<double>> &
 	// select the minimum threshold's impurity
 	Decision lowestImpurity = minHeap.removeMin();
 
-	// Unit tests want impurity from lowest threshold if impurities are even
-	// if (thresholds.size() <= 2)
-	// {
-	// 	return lowestImpurity;
-	// }
-	// Decision secondLowestImpurity = minHeap.removeMin();
-
-	// if (lowestImpurity.impurity == secondLowestImpurity.impurity)
-	// {
-	// 	std::cout << "grabbed second: " << secondLowestImpurity.threshold << " first: " << lowestImpurity.threshold << std::endl;
-
-	// 	// return secondLowestImpurity;
-	// }
-
 	// return decision that is best threshold and impurity
-	std::cout << "Chosen impurity and threshold: " << lowestImpurity.impurity << ", " << lowestImpurity.threshold << std::endl;
+	// std::cout << "Chosen impurity and threshold: " << lowestImpurity.impurity << ", " << lowestImpurity.threshold << std::endl;
 
 	return lowestImpurity;
 }
