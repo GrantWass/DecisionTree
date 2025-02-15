@@ -275,13 +275,13 @@ int DTree::classify(vector<double> &data)
 			// Return majority class based on threshold comparison
 			if (attributeValue < currentNode->data.threshold)
 			{
-				std::cout << "lower " << std::endl;
+				std::cout << "lower classify " << std::endl;
 
 				return currentNode->data.majorityBelow;
 			}
 			else
 			{
-				std::cout << "higher " << std::endl;
+				std::cout << "higher classify" << std::endl;
 
 				return currentNode->data.majorityAbove;
 			}
