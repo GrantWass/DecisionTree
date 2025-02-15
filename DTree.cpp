@@ -58,6 +58,17 @@ void DTree::train(unordered_map<string, vector<double>> &data, vector<int> &outc
 	root = trainSubtree(nullptr, data, outcomes, 0);
 }
 
+// From ChatGPT
+int getAttributeIndex(const string &attribute, vector<string> attributes)
+{
+	auto it = std::find(attributes.begin(), attributes.end(), attribute);
+	if (it != attributes.end())
+	{
+		return std::distance(attributes.begin(), it); // Get index of the attribute
+	}
+	return -1;
+}
+
 DNode *DTree::trainSubtree(DNode *parent, unordered_map<string, vector<double>> data, vector<int> outcomes, int depth)
 {
 	// Base case: If all outcomes are the same, return nullptr
@@ -78,6 +89,8 @@ DNode *DTree::trainSubtree(DNode *parent, unordered_map<string, vector<double>> 
 
 	// Create a new node with the decision
 	DNode *n = new DNode(d, depth, parent);
+
+	n->attributeIndex = getAttributeIndex(d.attribute, attributes);
 
 	std::unordered_map<std::string, std::vector<double>> dataLeft, dataRight;
 	std::vector<int> outcomesLeft, outcomesRight;
@@ -230,6 +243,7 @@ Decision DTree::getImpurity(string attr, unordered_map<string, vector<double>> &
 		int majorityAbove = yesCountUpper > noCountUpper ? 1 : 0;
 		int majorityBelow = yesCountLower > noCountLower ? 1 : 0;
 		Decision d(attr, threshold, weightedImpurity, majorityAbove, majorityBelow);
+
 		// std::cout << "Calculated impurity and threshold: " << weightedImpurity << ", " << threshold << std::endl;
 
 		minHeap.insert(d);
@@ -251,12 +265,14 @@ int DTree::classify(vector<double> &data)
 		std::cout << "Current node threshold: " << currentNode->data.threshold << std::endl;
 		std::cout << "Current node attribute" << currentNode->data.attribute << std::endl;
 
+		double attributeValue = data[currentNode->attributeIndex];
+
 		// If the current node is a leaf node (no left or right child), return the prediction
 		if (currentNode->left == nullptr && currentNode->right == nullptr)
 		{
 
 			// Return majority class based on threshold comparison
-			if (data[0] < currentNode->data.threshold)
+			if (attributeValue < currentNode->data.threshold)
 			{
 				return currentNode->data.majorityBelow;
 			}
@@ -267,7 +283,7 @@ int DTree::classify(vector<double> &data)
 		}
 
 		// Otherwise, move to the left or right child based on threshold
-		if (data[0] < currentNode->data.threshold)
+		if (attributeValue < currentNode->data.threshold)
 		{
 			currentNode = currentNode->left;
 		}
