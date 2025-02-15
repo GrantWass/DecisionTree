@@ -54,7 +54,6 @@ struct DecisionComparator
 
 void DTree::train(unordered_map<string, vector<double>> &data, vector<int> &outcomes)
 {
-	// TODO
 	// Call recursive helper on data and outcomes to build the tree
 	root = trainSubtree(nullptr, data, outcomes, 0);
 }
@@ -65,14 +64,12 @@ DNode *DTree::trainSubtree(DNode *parent, unordered_map<string, vector<double>> 
 	if (std::all_of(outcomes.begin(), outcomes.end(), [&](int val)
 					{ return val == outcomes[0]; }))
 	{
-		std::cout << "All outcomes are the same at depth " << depth << ". Returning nullptr.\n";
 		return nullptr;
 	}
 
 	// Base case: If there are no attributes left, return nullptr
 	if (data.empty())
 	{
-		std::cout << "No attributes left at depth " << depth << ". Returning nullptr.\n";
 		return nullptr;
 	}
 
@@ -81,9 +78,6 @@ DNode *DTree::trainSubtree(DNode *parent, unordered_map<string, vector<double>> 
 
 	// Create a new node with the decision
 	DNode *n = new DNode(d, depth, parent);
-	std::cout << "Created node at depth " << depth << " with attribute " << d.attribute
-			  << " and threshold " << d.threshold << " (Impurity: " << d.impurity
-			  << ") at memory address " << n << "\n";
 
 	std::unordered_map<std::string, std::vector<double>> dataLeft, dataRight;
 	std::vector<int> outcomesLeft, outcomesRight;
@@ -109,19 +103,9 @@ DNode *DTree::trainSubtree(DNode *parent, unordered_map<string, vector<double>> 
 	outcomesLeft = std::vector<int>(outcomes.begin(), outcomes.begin() + splitIndex);
 	outcomesRight = std::vector<int>(outcomes.begin() + splitIndex, outcomes.end());
 
-	// Logging split info
-	std::cout << "Split data at depth " << depth << " with threshold " << d.threshold
-			  << ": Left size = " << outcomesLeft.size()
-			  << ", Right size = " << outcomesRight.size() << "\n";
-
 	// Recur for left and right subtrees
 	n->left = trainSubtree(n, dataLeft, outcomesLeft, depth + 1);
 	n->right = trainSubtree(n, dataRight, outcomesRight, depth + 1);
-
-	if (n->left == nullptr)
-		std::cout << "Left child of node at depth " << depth << " is nullptr as expected. Node address: " << n << "\n";
-	else
-		std::cout << "Warning: Left child of node at depth " << depth << " is NOT nullptr. Node address: " << n << "\n";
 
 	return n;
 }
@@ -259,47 +243,37 @@ Decision DTree::getImpurity(string attr, unordered_map<string, vector<double>> &
 	return lowestImpurity;
 }
 
-int classifyInner(DNode *n, vector<double> &data)
+int DTree::classify(vector<double> &data)
 {
-	if (n->left == nullptr && n->right == nullptr && n != nullptr)
+	DNode *currentNode = root;
+	while (currentNode != nullptr)
 	{
-		if (n->data.threshold < data[0]) // TODO
+		// If the current node is a leaf node (no left or right child), return the prediction
+		if (currentNode->left == nullptr && currentNode->right == nullptr)
 		{
-			return n->data.majorityBelow;
+			// Return majority class based on threshold comparison
+			if (data[0] < currentNode->data.threshold)
+			{
+				return currentNode->data.majorityBelow;
+			}
+			else
+			{
+				return currentNode->data.majorityAbove;
+			}
+		}
+
+		// Otherwise, move to the left or right child based on threshold
+		if (data[0] < currentNode->data.threshold)
+		{
+			currentNode = currentNode->left;
 		}
 		else
 		{
-			return n->data.majorityAbove;
+			currentNode = currentNode->right;
 		}
 	}
-	else if (n->data.threshold < data[0])
-	{
-		return classifyInner(n->right, data);
-	}
-	else
-	{
-		return classifyInner(n->left, data);
-	}
-}
 
-int DTree::classify(vector<double> &data)
-{
-
-	// This function takes in a single instance (row) from the CSV
-	//  and moves down the branches of the tree until reaching the
-	//  bottom and making a prediction based on the majorityAbove
-	//  or majorityBelow labels and the final threshold value.
-	//  TODO
-	int result = 0;
-	if (root->data.threshold < data[0]) // TODO
-	{
-		result = classifyInner(root->right, data);
-	}
-	else
-	{
-		result = classifyInner(root->left, data);
-	}
-	return result;
+	return -1;
 }
 
 // DONE

@@ -313,8 +313,8 @@ public:
         outcomesRight = std::vector<int>(outcomes.begin() + splitIndex, outcomes.end());
 
         // Recursively build left and right subtrees
-        n->right = trainSubtree(n, dataLeft, outcomesLeft, depth + 1);
-        n->left = trainSubtree(n, dataRight, outcomesRight, depth + 1);
+        n->left = trainSubtree(n, dataLeft, outcomesLeft, depth + 1);
+        n->right = trainSubtree(n, dataRight, outcomesRight, depth + 1);
 
         return n;
     }
