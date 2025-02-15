@@ -264,8 +264,9 @@ int DTree::classify(vector<double> &data)
 	{
 		std::cout << "Current node threshold: " << currentNode->data.threshold << std::endl;
 		std::cout << "Current node attribute" << currentNode->data.attribute << std::endl;
-
 		double attributeValue = data[currentNode->attributeIndex];
+
+		std::cout << "Attribute value: " << attributeValue << std::endl;
 
 		// If the current node is a leaf node (no left or right child), return the prediction
 		if (currentNode->left == nullptr && currentNode->right == nullptr)
@@ -274,10 +275,14 @@ int DTree::classify(vector<double> &data)
 			// Return majority class based on threshold comparison
 			if (attributeValue < currentNode->data.threshold)
 			{
+				std::cout << "lower " << std::endl;
+
 				return currentNode->data.majorityBelow;
 			}
 			else
 			{
+				std::cout << "higher " << std::endl;
+
 				return currentNode->data.majorityAbove;
 			}
 		}
@@ -285,10 +290,12 @@ int DTree::classify(vector<double> &data)
 		// Otherwise, move to the left or right child based on threshold
 		if (attributeValue < currentNode->data.threshold)
 		{
+			std::cout << "lower " << std::endl;
 			currentNode = currentNode->left;
 		}
 		else
 		{
+			std::cout << "higher " << std::endl;
 			currentNode = currentNode->right;
 		}
 	}
