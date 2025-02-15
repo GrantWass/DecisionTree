@@ -225,6 +225,8 @@ Decision DTree::getImpurity(string attr, unordered_map<string, vector<double>> &
 		return lowestImpurity;
 	}
 	Decision secondLowestImpurity = minHeap.removeMin();
+	std::cout << "grabbed second: " << secondLowestImpurity.threshold << " from " << lowestImpurity.threshold << std::endl;
+
 	if (lowestImpurity.impurity == secondLowestImpurity.impurity && lowestImpurity.threshold > secondLowestImpurity.threshold)
 	{
 		return secondLowestImpurity;
