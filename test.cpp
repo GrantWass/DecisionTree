@@ -259,7 +259,6 @@ public:
             return lowestImpurity;
         }
         Decision secondLowestImpurity = minHeap.removeMin();
-        std::cout << "grabbed second: " << secondLowestImpurity.threshold << " from " << lowestImpurity.threshold << std::endl;
 
         // Unit tests want impurity from lowest threshold if impurities are even
         if (lowestImpurity.impurity == secondLowestImpurity.impurity && lowestImpurity.threshold > secondLowestImpurity.threshold)
