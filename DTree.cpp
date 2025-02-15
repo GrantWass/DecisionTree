@@ -40,6 +40,18 @@ string DTree::levelOrderTraversal()
 	return ss.str();
 }
 
+struct DecisionComparator
+{
+	bool operator()(const Decision &a, const Decision &b) const
+	{
+		if (a.impurity == b.impurity)
+		{
+			return a.threshold < b.threshold;
+		}
+		return a.impurity < b.impurity;
+	}
+};
+
 void DTree::train(unordered_map<string, vector<double>> &data, vector<int> &outcomes)
 {
 	// TODO
@@ -206,6 +218,18 @@ Decision DTree::getImpurity(string attr, unordered_map<string, vector<double>> &
 	}
 	// select the minimum threshold's impurity
 	Decision lowestImpurity = minHeap.removeMin();
+
+	// Unit tests want impurity from lowest threshold if impurities are even
+	if (thresholds.size() <= 2)
+	{
+		return lowestImpurity;
+	}
+	Decision secondLowestImpurity = minHeap.removeMin();
+	if (lowestImpurity.impurity == secondLowestImpurity.impurity && lowestImpurity.threshold > secondLowestImpurity.threshold)
+	{
+		return secondLowestImpurity;
+	}
+
 	// return decision that is best threshold and impurity
 	return lowestImpurity;
 }
