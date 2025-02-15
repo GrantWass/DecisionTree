@@ -289,27 +289,21 @@ public:
     // Method to recursively build the decision tree (train subtree)
     DNode *trainSubtree(DNode *parent, std::unordered_map<std::string, std::vector<double>> &data, std::vector<int> &outcomes, int depth)
     {
-        // std::cout << "Training subtree at depth " << depth << std::endl;
-
         // Base case: If all outcomes are the same, return nullptr
         if (std::all_of(outcomes.begin(), outcomes.end(), [&](int val)
                         { return val == outcomes[0]; }))
         {
-            // std::cout << "All outcomes are the same, returning nullptr" << std::endl;
             return nullptr;
         }
 
         // Base case: If there are no attributes left, return nullptr
         if (data.empty())
         {
-            // std::cout << "No attributes left, returning nullptr" << std::endl;
             return nullptr;
         }
 
         // Get the best feature/attribute threshold based on impurity
         Decision d = getMinImpurity(data, outcomes);
-
-        // std::cout << "Creating node with decision: " << d.attribute << " threshold: " << d.threshold << std::endl;
 
         // Create a new node with the decision
         DNode *n = new DNode(d, depth, parent);

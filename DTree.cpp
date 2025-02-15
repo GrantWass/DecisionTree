@@ -79,8 +79,8 @@ DNode *DTree::trainSubtree(DNode *parent, unordered_map<string, vector<double>> 
 
 	// Create a new node with the decision
 	DNode *n = new DNode(d, depth, parent);
-	unordered_map<string, vector<double>> dataLeft, dataRight;
-	vector<int> outcomesLeft, outcomesRight;
+	std::unordered_map<std::string, std::vector<double>> dataLeft, dataRight;
+	std::vector<int> outcomesLeft, outcomesRight;
 
 	// first sort the data based on the attribute
 	vector<int> sortedIndices = DHelper::getSortOrder(data[d.attribute]);
@@ -100,8 +100,8 @@ DNode *DTree::trainSubtree(DNode *parent, unordered_map<string, vector<double>> 
 
 	dataLeft = splitData.first;
 	dataRight = splitData.second;
-	outcomesLeft = vector<int>(outcomes.begin(), outcomes.begin() + splitIndex);
-	outcomesRight = vector<int>(outcomes.begin() + splitIndex, outcomes.end());
+	outcomesLeft = std::vector<int>(outcomes.begin(), outcomes.begin() + splitIndex);
+	outcomesRight = std::vector<int>(outcomes.begin() + splitIndex, outcomes.end());
 
 	n->right = trainSubtree(n, dataLeft, outcomesLeft, depth + 1);
 	n->left = trainSubtree(n, dataRight, outcomesRight, depth + 1);
@@ -115,11 +115,12 @@ Decision DTree::getMinImpurity(unordered_map<string, vector<double>> &data, vect
 	// pick feature with min impurity and return
 	// reccomend using MinHeap<Decision> to store the decisions
 	MinHeap<Decision> minHeap;
-	for (string &attr : attributes)
+	for (auto &[attr, values] : data)
 	{
 		Decision d = getImpurity(attr, data, outcomes);
 		minHeap.insert(d);
 	}
+
 	Decision lowestImpurity = minHeap.removeMin();
 	std::cout << "Best decision based on impurity (whole): " << lowestImpurity.impurity << " for threshold " << lowestImpurity.threshold << std::endl;
 
@@ -132,9 +133,9 @@ Decision DTree::getImpurity(string attr, unordered_map<string, vector<double>> &
 	std::cout << "Calculating impurity for attribute: " << attr << ", " << data[attr].size() << std::endl;
 
 	// get the impurity for a single attribute
-	vector<double> attributeData = data[attr];
+	std::vector<double> attributeData = data[attr];
 	// sort the attribute data
-	vector<int> sortedIndices = DHelper::getSortOrder(attributeData);
+	std::vector<int> sortedIndices = DHelper::getSortOrder(attributeData);
 	attributeData = DHelper::sortVector(sortedIndices, attributeData);
 
 	// must also sort outcomes
@@ -155,8 +156,11 @@ Decision DTree::getImpurity(string attr, unordered_map<string, vector<double>> &
 	}
 	std::cout << std::endl;
 
+	MinHeap<Decision> minHeap;
+	int overallCount = attributeData.size();
+
 	// get the unique values in the attribute
-	vector<double> uniqueValues;
+	std::vector<double> uniqueValues;
 	for (int i = 0; i < attributeData.size(); i++)
 	{
 		if (i == 0 || attributeData[i] != attributeData[i - 1])
@@ -165,13 +169,11 @@ Decision DTree::getImpurity(string attr, unordered_map<string, vector<double>> &
 		}
 	}
 	// get a list of thresholds
-	vector<double> thresholds;
+	std::vector<double> thresholds;
 	for (int i = 0; i < uniqueValues.size() - 1; i++)
 	{
 		thresholds.push_back((uniqueValues[i] + uniqueValues[i + 1]) / 2);
 	}
-
-	MinHeap<Decision> minHeap;
 
 	// for each threshold
 	for (double threshold : thresholds)
@@ -187,26 +189,18 @@ Decision DTree::getImpurity(string attr, unordered_map<string, vector<double>> &
 		for (size_t i = 0; i < attributeData.size(); i++)
 		{
 			if (attributeData[i] < threshold)
-			{ // lower impurity
+			{
 				if (outcomes[i] == 1)
-				{
 					yesCountLower++;
-				}
 				else
-				{
 					noCountLower++;
-				}
 			}
 			else
-			{ // upper impurity
+			{
 				if (outcomes[i] == 1)
-				{
 					yesCountUpper++;
-				}
 				else
-				{
 					noCountUpper++;
-				}
 			}
 		}
 
