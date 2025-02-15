@@ -65,12 +65,14 @@ DNode *DTree::trainSubtree(DNode *parent, unordered_map<string, vector<double>> 
 	if (std::all_of(outcomes.begin(), outcomes.end(), [&](int val)
 					{ return val == outcomes[0]; }))
 	{
+		std::cout << "All outcomes are the same at depth " << depth << ". Returning nullptr.\n";
 		return nullptr;
 	}
 
 	// Base case: If there are no attributes left, return nullptr
 	if (data.empty())
 	{
+		std::cout << "No attributes left at depth " << depth << ". Returning nullptr.\n";
 		return nullptr;
 	}
 
@@ -79,10 +81,14 @@ DNode *DTree::trainSubtree(DNode *parent, unordered_map<string, vector<double>> 
 
 	// Create a new node with the decision
 	DNode *n = new DNode(d, depth, parent);
+	std::cout << "Created node at depth " << depth << " with attribute " << d.attribute
+			  << " and threshold " << d.threshold << " (Impurity: " << d.impurity
+			  << ") at memory address " << n << "\n";
+
 	std::unordered_map<std::string, std::vector<double>> dataLeft, dataRight;
 	std::vector<int> outcomesLeft, outcomesRight;
 
-	// first sort the data based on the attribute
+	// First, sort the data based on the attribute
 	vector<int> sortedIndices = DHelper::getSortOrder(data[d.attribute]);
 
 	// Iterate over all attributes in data and sort the corresponding vectors
@@ -103,8 +109,19 @@ DNode *DTree::trainSubtree(DNode *parent, unordered_map<string, vector<double>> 
 	outcomesLeft = std::vector<int>(outcomes.begin(), outcomes.begin() + splitIndex);
 	outcomesRight = std::vector<int>(outcomes.begin() + splitIndex, outcomes.end());
 
+	// Logging split info
+	std::cout << "Split data at depth " << depth << " with threshold " << d.threshold
+			  << ": Left size = " << outcomesLeft.size()
+			  << ", Right size = " << outcomesRight.size() << "\n";
+
+	// Recur for left and right subtrees
 	n->right = trainSubtree(n, dataLeft, outcomesLeft, depth + 1);
 	n->left = trainSubtree(n, dataRight, outcomesRight, depth + 1);
+
+	if (n->left == nullptr)
+		std::cout << "Left child of node at depth " << depth << " is nullptr as expected. Node address: " << n << "\n";
+	else
+		std::cout << "Warning: Left child of node at depth " << depth << " is NOT nullptr. Node address: " << n << "\n";
 
 	return n;
 }
@@ -229,7 +246,7 @@ Decision DTree::getImpurity(string attr, unordered_map<string, vector<double>> &
 		int majorityAbove = yesCountUpper > noCountUpper ? 1 : 0;
 		int majorityBelow = yesCountLower > noCountLower ? 1 : 0;
 		Decision d(attr, threshold, weightedImpurity, majorityAbove, majorityBelow);
-		std::cout << "Calculated impurity and threshold: " << weightedImpurity << ", " << threshold << std::endl;
+		// std::cout << "Calculated impurity and threshold: " << weightedImpurity << ", " << threshold << std::endl;
 
 		minHeap.insert(d);
 	}
