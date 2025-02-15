@@ -61,23 +61,23 @@ void DTree::train(unordered_map<string, vector<double>> &data, vector<int> &outc
 
 DNode *DTree::trainSubtree(DNode *parent, unordered_map<string, vector<double>> data, vector<int> outcomes, int depth)
 {
-	// Uncertain about the base cases
-	// If all outcomes are the same
+	// Base case: If all outcomes are the same, return nullptr
 	if (std::all_of(outcomes.begin(), outcomes.end(), [&](int val)
 					{ return val == outcomes[0]; }))
 	{
 		return nullptr;
 	}
 
-	// If there are no attributes left
+	// Base case: If there are no attributes left, return nullptr
 	if (data.empty())
 	{
 		return nullptr;
 	}
-	// get the best feature/attribute threshold based on impurity
-	// call getMinImpurity
+
+	// Get the best feature/attribute threshold based on impurity
 	Decision d = getMinImpurity(data, outcomes);
-	// create a new node with the decision
+
+	// Create a new node with the decision
 	DNode *n = new DNode(d, depth, parent);
 	unordered_map<string, vector<double>> dataLeft, dataRight;
 	vector<int> outcomesLeft, outcomesRight;
@@ -85,17 +85,16 @@ DNode *DTree::trainSubtree(DNode *parent, unordered_map<string, vector<double>> 
 	// first sort the data based on the attribute
 	vector<int> sortedIndices = DHelper::getSortOrder(data[d.attribute]);
 
-	// iterate over all attributes in data
+	// Iterate over all attributes in data and sort the corresponding vectors
 	for (auto &[key, values] : data)
 	{
-		// call helper sortVector and save back into data
 		values = DHelper::sortVector(sortedIndices, values);
 	}
 
-	// sort outcomes as well
+	// Sort outcomes as well
 	outcomes = DHelper::sortVector(sortedIndices, outcomes);
 
-	// split the data based on the threshold
+	// Split the data based on the threshold
 	int splitIndex = DHelper::getSplitPoint(d.threshold, data[d.attribute]);
 	auto splitData = DHelper::splitData(splitIndex, data);
 
@@ -214,26 +213,30 @@ Decision DTree::getImpurity(string attr, unordered_map<string, vector<double>> &
 		int majorityAbove = yesCountUpper > noCountUpper ? 1 : 0;
 		int majorityBelow = yesCountLower > noCountLower ? 1 : 0;
 		Decision d(attr, threshold, weightedImpurity, majorityAbove, majorityBelow);
+		std::cout << "Calculated impurity and threshold: " << weightedImpurity << ", " << threshold << std::endl;
+
 		minHeap.insert(d);
 	}
 	// select the minimum threshold's impurity
 	Decision lowestImpurity = minHeap.removeMin();
 
 	// Unit tests want impurity from lowest threshold if impurities are even
-	if (thresholds.size() <= 2)
-	{
-		return lowestImpurity;
-	}
-	Decision secondLowestImpurity = minHeap.removeMin();
+	// if (thresholds.size() <= 2)
+	// {
+	// 	return lowestImpurity;
+	// }
+	// Decision secondLowestImpurity = minHeap.removeMin();
 
-	if (lowestImpurity.impurity == secondLowestImpurity.impurity)
-	{
-		std::cout << "grabbed second: " << secondLowestImpurity.threshold << " first: " << lowestImpurity.threshold << std::endl;
+	// if (lowestImpurity.impurity == secondLowestImpurity.impurity)
+	// {
+	// 	std::cout << "grabbed second: " << secondLowestImpurity.threshold << " first: " << lowestImpurity.threshold << std::endl;
 
-		// return secondLowestImpurity;
-	}
+	// 	// return secondLowestImpurity;
+	// }
 
 	// return decision that is best threshold and impurity
+	std::cout << "Chosen impurity and threshold: " << lowestImpurity.impurity << ", " << lowestImpurity.threshold << std::endl;
+
 	return lowestImpurity;
 }
 
