@@ -115,8 +115,8 @@ DNode *DTree::trainSubtree(DNode *parent, unordered_map<string, vector<double>> 
 			  << ", Right size = " << outcomesRight.size() << "\n";
 
 	// Recur for left and right subtrees
-	n->right = trainSubtree(n, dataLeft, outcomesLeft, depth + 1);
-	n->left = trainSubtree(n, dataRight, outcomesRight, depth + 1);
+	n->left = trainSubtree(n, dataLeft, outcomesLeft, depth + 1);
+	n->right = trainSubtree(n, dataRight, outcomesRight, depth + 1);
 
 	if (n->left == nullptr)
 		std::cout << "Left child of node at depth " << depth << " is nullptr as expected. Node address: " << n << "\n";
