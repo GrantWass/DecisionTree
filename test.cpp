@@ -167,7 +167,7 @@ public:
     // Method to calculate impurity for a given attribute and dataset
     Decision getImpurity(const std::string &attr, std::unordered_map<std::string, std::vector<double>> &data, std::vector<int> &outcomes)
     {
-        std::cout << "Calculating impurity for attribute: " << attr << ", " << data.size() << std::endl;
+        std::cout << "Calculating impurity for attribute: " << attr << ", " << data[attr].size() << std::endl;
 
         std::vector<double> attributeData = data[attr];
         std::vector<int> sortedIndices = DHelper::getSortOrder(attributeData);

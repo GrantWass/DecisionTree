@@ -120,13 +120,16 @@ Decision DTree::getMinImpurity(unordered_map<string, vector<double>> &data, vect
 		Decision d = getImpurity(attr, data, outcomes);
 		minHeap.insert(d);
 	}
-	return minHeap.removeMin();
+	Decision lowestImpurity = minHeap.removeMin();
+	std::cout << "Best decision based on impurity (whole): " << lowestImpurity.impurity << " for threshold " << lowestImpurity.threshold << std::endl;
+
+	return lowestImpurity;
 }
 
 Decision DTree::getImpurity(string attr, unordered_map<string, vector<double>> &data, vector<int> &outcomes)
 {
 
-	std::cout << "Calculating impurity for attribute: " << attr << ", " << data.size() << std::endl;
+	std::cout << "Calculating impurity for attribute: " << attr << ", " << data[attr].size() << std::endl;
 
 	// get the impurity for a single attribute
 	vector<double> attributeData = data[attr];
