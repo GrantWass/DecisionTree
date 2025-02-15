@@ -248,9 +248,13 @@ int DTree::classify(vector<double> &data)
 	DNode *currentNode = root;
 	while (currentNode != nullptr)
 	{
+		std::cout << "Current node threshold: " << currentNode->data.threshold << std::endl;
+		std::cout << "Current node attribute" << currentNode->data.attribute << std::endl;
+
 		// If the current node is a leaf node (no left or right child), return the prediction
 		if (currentNode->left == nullptr && currentNode->right == nullptr)
 		{
+
 			// Return majority class based on threshold comparison
 			if (data[0] < currentNode->data.threshold)
 			{
