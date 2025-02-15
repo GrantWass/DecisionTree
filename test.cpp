@@ -343,6 +343,7 @@ int main()
     // Input test data
     std::unordered_map<std::string, std::vector<double>> data;
     data["f1"] = {1, 2, 3, 4, 5, 1, 7};
+
     data["f2"] = {0.2, 0.1, 0.3, 0.5, 0.0, 0.6, 0.1};
 
     std::vector<int> outcomes = {0, 1, 0, 0, 1, 1, 0};

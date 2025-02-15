@@ -92,7 +92,7 @@ DNode *DTree::trainSubtree(DNode *parent, unordered_map<string, vector<double>> 
 
 	n->attributeIndex = getAttributeIndex(d.attribute, attributes);
 
-	std::unordered_map<std::string, std::vector<double>> dataLeft, dataRight;
+	unordered_map<std::string, std::vector<double>> dataLeft, dataRight;
 	std::vector<int> outcomesLeft, outcomesRight;
 
 	// First, sort the data based on the attribute
