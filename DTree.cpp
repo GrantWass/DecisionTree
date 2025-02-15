@@ -139,6 +139,22 @@ Decision DTree::getImpurity(string attr, unordered_map<string, vector<double>> &
 
 	// must also sort outcomes
 	outcomes = DHelper::sortVector(sortedIndices, outcomes);
+
+	std::cout << "Attribute Data: ";
+	for (double val : attributeData)
+	{
+		std::cout << val << " ";
+	}
+	std::cout << std::endl;
+
+	// Print outcomes
+	std::cout << "Outcomes: ";
+	for (int outcome : outcomes)
+	{
+		std::cout << outcome << " ";
+	}
+	std::cout << std::endl;
+
 	// get the unique values in the attribute
 	vector<double> uniqueValues;
 	for (int i = 0; i < attributeData.size(); i++)

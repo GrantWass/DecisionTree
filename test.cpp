@@ -173,6 +173,20 @@ public:
         std::vector<int> sortedIndices = DHelper::getSortOrder(attributeData);
         attributeData = DHelper::sortVector(sortedIndices, attributeData);
         outcomes = DHelper::sortVector(sortedIndices, outcomes);
+        std::cout << "Attribute Data: ";
+        for (double val : attributeData)
+        {
+            std::cout << val << " ";
+        }
+        std::cout << std::endl;
+
+        // Print outcomes
+        std::cout << "Outcomes: ";
+        for (int outcome : outcomes)
+        {
+            std::cout << outcome << " ";
+        }
+        std::cout << std::endl;
 
         MinHeap<Decision> minHeap;
         int overallCount = attributeData.size();
