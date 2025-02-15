@@ -167,7 +167,7 @@ public:
     // Method to calculate impurity for a given attribute and dataset
     Decision getImpurity(const std::string &attr, std::unordered_map<std::string, std::vector<double>> &data, std::vector<int> &outcomes)
     {
-        std::cout << "Calculating impurity for attribute: " << attr << std::endl;
+        std::cout << "Calculating impurity for attribute: " << attr << ", " << data.size() << std::endl;
 
         std::vector<double> attributeData = data[attr];
         std::vector<int> sortedIndices = DHelper::getSortOrder(attributeData);
@@ -192,14 +192,14 @@ public:
             thresholds.push_back((uniqueValues[i] + uniqueValues[i + 1]) / 2);
         }
 
-        std::cout << "Unique values and thresholds: ";
-        for (double val : uniqueValues)
-            std::cout << val << " ";
-        std::cout << std::endl;
+        // std::cout << "Unique values and thresholds: ";
+        // for (double val : uniqueValues)
+        //     std::cout << val << " ";
+        // std::cout << std::endl;
 
         for (double threshold : thresholds)
         {
-            std::cout << "Threshold: " << threshold << std::endl;
+            // std::cout << "Threshold: " << threshold << std::endl;
 
             double lowerImpurity = 0.0;
             double upperImpurity = 0.0;
@@ -254,19 +254,19 @@ public:
         }
 
         Decision lowestImpurity = minHeap.removeMin();
-        if (thresholds.size() <= 2)
-        {
-            return lowestImpurity;
-        }
-        Decision secondLowestImpurity = minHeap.removeMin();
+        // if (thresholds.size() <= 2)
+        // {
+        //     return lowestImpurity;
+        // }
+        // Decision secondLowestImpurity = minHeap.removeMin();
 
-        // Unit tests want impurity from lowest threshold if impurities are even
-        if (lowestImpurity.impurity == secondLowestImpurity.impurity && lowestImpurity.threshold > secondLowestImpurity.threshold)
-        {
-            std::cout << "Changed Decision: " << secondLowestImpurity.impurity << " from " << lowestImpurity.threshold << std::endl;
+        // // Unit tests want impurity from lowest threshold if impurities are even
+        // if (lowestImpurity.impurity == secondLowestImpurity.impurity && lowestImpurity.threshold > secondLowestImpurity.threshold)
+        // {
+        //     std::cout << "Changed Decision: " << secondLowestImpurity.impurity << " from " << lowestImpurity.threshold << std::endl;
 
-            return secondLowestImpurity;
-        }
+        //     return secondLowestImpurity;
+        // }
         std::cout << "Best decision based on impurity: " << lowestImpurity.impurity << " for threshold " << lowestImpurity.threshold << std::endl;
 
         return lowestImpurity;
@@ -275,27 +275,27 @@ public:
     // Method to recursively build the decision tree (train subtree)
     DNode *trainSubtree(DNode *parent, std::unordered_map<std::string, std::vector<double>> &data, std::vector<int> &outcomes, int depth)
     {
-        std::cout << "Training subtree at depth " << depth << std::endl;
+        // std::cout << "Training subtree at depth " << depth << std::endl;
 
         // Base case: If all outcomes are the same, return nullptr
         if (std::all_of(outcomes.begin(), outcomes.end(), [&](int val)
                         { return val == outcomes[0]; }))
         {
-            std::cout << "All outcomes are the same, returning nullptr" << std::endl;
+            // std::cout << "All outcomes are the same, returning nullptr" << std::endl;
             return nullptr;
         }
 
         // Base case: If there are no attributes left, return nullptr
         if (data.empty())
         {
-            std::cout << "No attributes left, returning nullptr" << std::endl;
+            // std::cout << "No attributes left, returning nullptr" << std::endl;
             return nullptr;
         }
 
         // Get the best feature/attribute threshold based on impurity
         Decision d = getMinImpurity(data, outcomes);
 
-        std::cout << "Creating node with decision: " << d.attribute << " threshold: " << d.threshold << std::endl;
+        // std::cout << "Creating node with decision: " << d.attribute << " threshold: " << d.threshold << std::endl;
 
         // Create a new node with the decision
         DNode *n = new DNode(d, depth, parent);
@@ -333,7 +333,7 @@ public:
     // Method to get the best impurity decision across all attributes
     Decision getMinImpurity(std::unordered_map<std::string, std::vector<double>> &data, std::vector<int> &outcomes)
     {
-        std::cout << "Getting minimum impurity" << std::endl;
+        // std::cout << "Getting minimum impurity" << std::endl;
 
         MinHeap<Decision> minHeap;
         for (auto &[attr, values] : data)
@@ -341,7 +341,11 @@ public:
             Decision d = getImpurity(attr, data, outcomes);
             minHeap.insert(d);
         }
-        return minHeap.removeMin();
+
+        Decision lowestImpurity = minHeap.removeMin();
+        std::cout << "Best decision based on impurity (whole): " << lowestImpurity.impurity << " for threshold " << lowestImpurity.threshold << std::endl;
+
+        return lowestImpurity;
     }
 };
 

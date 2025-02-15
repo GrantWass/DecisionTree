@@ -125,6 +125,9 @@ Decision DTree::getMinImpurity(unordered_map<string, vector<double>> &data, vect
 
 Decision DTree::getImpurity(string attr, unordered_map<string, vector<double>> &data, vector<int> &outcomes)
 {
+
+	std::cout << "Calculating impurity for attribute: " << attr << ", " << data.size() << std::endl;
+
 	// get the impurity for a single attribute
 	vector<double> attributeData = data[attr];
 	// sort the attribute data

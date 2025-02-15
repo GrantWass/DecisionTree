@@ -1,3 +1,16 @@
+Some background: I have never used c++ but have had one class in C. I understand the pointers and memory management
+side of things but the syntax I will need a lot of help on.
+
+Starting: I didn't really start until the study session. I looked at the documentation and attended your session 
+and leaving that I was able to get a pretty strong idea of where to go from helper
+
+I wrote a lot of psuedocode or python style code for the functions based on the logic that was needed. I did this because
+I wanted to get the logic written, not caring too much about syntax. After that I slowly moved towards the right syntax, 
+often using ChatGPT to fill in the knowledge gaps. An example is below
+
+
+Code I gave to GPT:
+
 int lowerImpurity = 0;
 int upperImpurity = 0;
 int yesCountLower = 0;
@@ -82,6 +95,11 @@ if (upperCount > 0) {
 double weightedImpurity = (static_cast<double>(lowerCount) / overallCount) * lowerImpurity +
                           (static_cast<double>(upperCount) / overallCount) * upperImpurity;
 
+I did this for many of my functions to get the syntax correct. ChatGPT also noticed the occasional error in my code 
+which was certainly helpful. 
 
 Used GPT to help me understand how to handle the base case of trainSubtree. I knew it would be
-when we had no more data to split but was unsure how to implement
+when we had no more data to split on but was unsure how to implement
+
+When testing on my code I came across some instances where I should have used doubles when I used ints. ChatGPT was 
+able to help me decipher errors in the tests to figure that out.
