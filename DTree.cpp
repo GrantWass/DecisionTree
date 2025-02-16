@@ -231,58 +231,27 @@ int DTree::classify(vector<double> &data)
 	{
 		double attributeValue = data[currentNode->attributeIndex];
 
-		// If the current node is a leaf node (no left or right child), return the prediction
-		if (currentNode->left == nullptr && currentNode->right == nullptr)
-		{
+		// If the node is a leaf, return the majority class
+		if (!currentNode->left && !currentNode->right)
+			return attributeValue < currentNode->data.threshold ? currentNode->data.majorityBelow : currentNode->data.majorityAbove;
 
-			// Return majority class based on threshold comparison
-			if (attributeValue < currentNode->data.threshold)
-			{
-				return currentNode->data.majorityBelow;
-			}
-			else
-			{
-				return currentNode->data.majorityAbove;
-			}
-		}
-
-		if (currentNode->right == nullptr)
+		if (attributeValue < currentNode->data.threshold)
 		{
-			if (attributeValue < currentNode->data.threshold)
-			{
+			if (currentNode->left)
 				currentNode = currentNode->left;
-			}
 			else
-			{
-				return currentNode->data.majorityAbove;
-			}
-		}
-		else if (currentNode->left == nullptr)
-		{
-			if (attributeValue < currentNode->data.threshold)
-			{
 				return currentNode->data.majorityBelow;
-			}
-			else
-			{
-				currentNode = currentNode->right;
-			}
 		}
 		else
 		{
-			// Otherwise, move to the left or right child based on threshold
-			if (attributeValue < currentNode->data.threshold)
-			{
-				currentNode = currentNode->left;
-			}
-			else
-			{
+			if (currentNode->right)
 				currentNode = currentNode->right;
-			}
+			else
+				return currentNode->data.majorityAbove;
 		}
 	}
 
-	return -1;
+	return -1; // Shouldn't reach here if the tree is properly formed
 }
 
 void DTree::clear(DNode *n)
