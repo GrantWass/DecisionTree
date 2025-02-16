@@ -171,8 +171,9 @@ public:
 
         std::vector<double> attributeData = data[attr];
         std::vector<int> sortedIndices = DHelper::getSortOrder(attributeData);
-        std::vector<int> sortedOutcomes;
         attributeData = DHelper::sortVector(sortedIndices, attributeData);
+
+        std::vector<int> sortedOutcomes;
         sortedOutcomes = DHelper::sortVector(sortedIndices, outcomes);
         std::cout << "Attribute Data: ";
         for (double val : attributeData)
@@ -205,6 +206,11 @@ public:
         for (int i = 0; i < uniqueValues.size() - 1; i++)
         {
             thresholds.push_back((uniqueValues[i] + uniqueValues[i + 1]) / 2);
+        }
+
+        if (uniqueValues.size() == 1)
+        {
+            thresholds.push_back(uniqueValues[0]);
         }
 
         for (double threshold : thresholds)

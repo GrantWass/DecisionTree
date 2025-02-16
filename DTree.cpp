@@ -190,6 +190,11 @@ Decision DTree::getImpurity(string attr, unordered_map<string, vector<double>> &
 		thresholds.push_back((uniqueValues[i] + uniqueValues[i + 1]) / 2);
 	}
 
+	if (uniqueValues.size() == 1)
+	{
+		thresholds.push_back(uniqueValues[0]);
+	}
+
 	// for each threshold
 	for (double threshold : thresholds)
 	{
