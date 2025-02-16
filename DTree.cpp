@@ -81,7 +81,10 @@ DNode *DTree::trainSubtree(DNode *parent, unordered_map<string, vector<double>> 
 	// Get the index of the attribute (for classification later)
 	n->attributeIndex = getAttributeIndex(d.attribute, attributes);
 
-	// Sort the data based on the chosen attribute
+	std::unordered_map<std::string, std::vector<double>> dataLeft, dataRight;
+	std::vector<int> outcomesLeft, outcomesRight;
+
+	// First, sort the data based on the attribute
 	vector<int> sortedIndices = DHelper::getSortOrder(data[d.attribute]);
 
 	// Iterate over all attributes in data and sort the corresponding vectors
@@ -97,12 +100,14 @@ DNode *DTree::trainSubtree(DNode *parent, unordered_map<string, vector<double>> 
 	int splitIndex = DHelper::getSplitPoint(d.threshold, data[d.attribute]);
 	auto splitData = DHelper::splitData(splitIndex, data);
 
-	std::vector<int> outcomesLeft = std::vector<int>(outcomes.begin(), outcomes.begin() + splitIndex);
-	std::vector<int> outcomesRight = std::vector<int>(outcomes.begin() + splitIndex, outcomes.end());
+	dataLeft = splitData.first;
+	dataRight = splitData.second;
+	outcomesLeft = std::vector<int>(outcomes.begin(), outcomes.begin() + splitIndex);
+	outcomesRight = std::vector<int>(outcomes.begin() + splitIndex, outcomes.end());
 
 	// Recur for left and right subtrees
-	n->left = trainSubtree(n, splitData.first, outcomesLeft, depth + 1);
-	n->right = trainSubtree(n, splitData.second, outcomesRight, depth + 1);
+	n->left = trainSubtree(n, dataLeft, outcomesLeft, depth + 1);
+	n->right = trainSubtree(n, dataRight, outcomesRight, depth + 1);
 
 	return n;
 }
@@ -119,8 +124,8 @@ Decision DTree::getMinImpurity(unordered_map<string, vector<double>> &data, vect
 		decisionMinHeap.insert(d);
 	}
 
-	return decisionMinHeap.removeMin();
-	;
+	Decision lowestImpurity = decisionMinHeap.removeMin();
+	return lowestImpurity;
 }
 
 auto giniImpurity = [](int yes, int no)
@@ -143,7 +148,8 @@ Decision DTree::getImpurity(string attr, unordered_map<string, vector<double>> &
 	attributeData = DHelper::sortVector(sortedIndices, attributeData);
 
 	// must also sort outcomes
-	std::vector<int> sortedOutcomes = DHelper::sortVector(sortedIndices, outcomes);
+	std::vector<int> sortedOutcomes;
+	sortedOutcomes = DHelper::sortVector(sortedIndices, outcomes);
 
 	MinHeap<Decision> decisionMinHeap;
 	int overallCount = attributeData.size();
