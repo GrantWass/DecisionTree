@@ -92,7 +92,7 @@ DNode *DTree::trainSubtree(DNode *parent, unordered_map<string, vector<double>> 
 
 	n->attributeIndex = getAttributeIndex(d.attribute, attributes);
 
-	unordered_map<std::string, std::vector<double>> dataLeft, dataRight;
+	std::unordered_map<std::string, std::vector<double>> dataLeft, dataRight;
 	std::vector<int> outcomesLeft, outcomesRight;
 
 	// First, sort the data based on the attribute
@@ -153,7 +153,8 @@ Decision DTree::getImpurity(string attr, unordered_map<string, vector<double>> &
 	attributeData = DHelper::sortVector(sortedIndices, attributeData);
 
 	// must also sort outcomes
-	outcomes = DHelper::sortVector(sortedIndices, outcomes);
+	std::vector<int> sortedOutcomes;
+	sortedOutcomes = DHelper::sortVector(sortedIndices, outcomes);
 
 	// std::cout << "Attribute Data: ";
 	// for (double val : attributeData)
@@ -204,14 +205,14 @@ Decision DTree::getImpurity(string attr, unordered_map<string, vector<double>> &
 		{
 			if (attributeData[i] < threshold)
 			{
-				if (outcomes[i] == 1)
+				if (sortedOutcomes[i] == 1)
 					yesCountLower++;
 				else
 					noCountLower++;
 			}
 			else
 			{
-				if (outcomes[i] == 1)
+				if (sortedOutcomes[i] == 1)
 					yesCountUpper++;
 				else
 					noCountUpper++;

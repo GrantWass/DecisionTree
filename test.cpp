@@ -171,8 +171,9 @@ public:
 
         std::vector<double> attributeData = data[attr];
         std::vector<int> sortedIndices = DHelper::getSortOrder(attributeData);
+        std::vector<int> sortedOutcomes;
         attributeData = DHelper::sortVector(sortedIndices, attributeData);
-        outcomes = DHelper::sortVector(sortedIndices, outcomes);
+        sortedOutcomes = DHelper::sortVector(sortedIndices, outcomes);
         std::cout << "Attribute Data: ";
         for (double val : attributeData)
         {
@@ -182,7 +183,7 @@ public:
 
         // Print outcomes
         std::cout << "Outcomes: ";
-        for (int outcome : outcomes)
+        for (int outcome : sortedOutcomes)
         {
             std::cout << outcome << " ";
         }
@@ -217,14 +218,14 @@ public:
             {
                 if (attributeData[i] < threshold)
                 {
-                    if (outcomes[i] == 1)
+                    if (sortedOutcomes[i] == 1)
                         yesCountLower++;
                     else
                         noCountLower++;
                 }
                 else
                 {
-                    if (outcomes[i] == 1)
+                    if (sortedOutcomes[i] == 1)
                         yesCountUpper++;
                     else
                         noCountUpper++;
@@ -291,6 +292,21 @@ public:
         std::unordered_map<std::string, std::vector<double>> dataLeft, dataRight;
         std::vector<int> outcomesLeft, outcomesRight;
 
+        // std::cout << "Attribute Data Before: ";
+        // for (double val : data[d.attribute])
+        // {
+        //     std::cout << val << " ";
+        // }
+        // std::cout << std::endl;
+
+        // // Print outcomes
+        // std::cout << "Outcomes Before: ";
+        // for (int outcome : outcomes)
+        // {
+        //     std::cout << outcome << " ";
+        // }
+        // std::cout << std::endl;
+
         // First, sort the data based on the attribute
         std::vector<int> sortedIndices = DHelper::getSortOrder(data[d.attribute]);
 
@@ -302,6 +318,21 @@ public:
 
         // Sort outcomes as well
         outcomes = DHelper::sortVector(sortedIndices, outcomes);
+
+        // std::cout << "Attribute Data After: ";
+        // for (double val : data[d.attribute])
+        // {
+        //     std::cout << val << " ";
+        // }
+        // std::cout << std::endl;
+
+        // // Print outcomes
+        // std::cout << "Outcomes After: ";
+        // for (int outcome : outcomes)
+        // {
+        //     std::cout << outcome << " ";
+        // }
+        // std::cout << std::endl;
 
         // Split the data based on the threshold
         int splitIndex = DHelper::getSplitPoint(d.threshold, data[d.attribute]);
