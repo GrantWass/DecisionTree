@@ -80,9 +80,6 @@ DNode *DTree::trainSubtree(DNode *parent, unordered_map<string, vector<double>> 
 
 	n->attributeIndex = getAttributeIndex(d.attribute, attributes);
 
-	std::unordered_map<std::string, std::vector<double>> dataLeft, dataRight;
-	std::vector<int> outcomesLeft, outcomesRight;
-
 	// First, sort the data based on the attribute
 	vector<int> sortedIndices = DHelper::getSortOrder(data[d.attribute]);
 
@@ -92,13 +89,16 @@ DNode *DTree::trainSubtree(DNode *parent, unordered_map<string, vector<double>> 
 		values = DHelper::sortVector(sortedIndices, values);
 	}
 
-	// Sort outcomes as well
+	// Sort outcomes as well so data and outcomes are in sync
 	outcomes = DHelper::sortVector(sortedIndices, outcomes);
 
 	// Split the data based on the threshold
 	int splitIndex = DHelper::getSplitPoint(d.threshold, data[d.attribute]);
 	auto splitData = DHelper::splitData(splitIndex, data);
 
+	// Create left and right data sets
+	std::unordered_map<std::string, std::vector<double>> dataLeft, dataRight;
+	std::vector<int> outcomesLeft, outcomesRight;
 	dataLeft = splitData.first;
 	dataRight = splitData.second;
 	outcomesLeft = std::vector<int>(outcomes.begin(), outcomes.begin() + splitIndex);
@@ -175,40 +175,28 @@ Decision DTree::getImpurity(string attr, unordered_map<string, vector<double>> &
 		{
 			if (attributeData[i] < threshold)
 			{
-				if (sortedOutcomes[i] == 1)
-					yesCountLower++;
-				else
-					noCountLower++;
+				sortedOutcomes[i] ? yesCountLower++ : noCountLower++;
 			}
 			else
 			{
-				if (sortedOutcomes[i] == 1)
-					yesCountUpper++;
-				else
-					noCountUpper++;
+				sortedOutcomes[i] ? yesCountUpper++ : noCountUpper++;
 			}
 		}
 
-		int lowerCount = yesCountLower + noCountLower;
-		int upperCount = yesCountUpper + noCountUpper;
-
-		if (lowerCount > 0)
+		auto giniImpurity = [](int yes, int no)
 		{
-			double pYesLower = static_cast<double>(yesCountLower) / lowerCount;
-			double pNoLower = static_cast<double>(noCountLower) / lowerCount;
-			lowerImpurity = 1.0 - (pYesLower * pYesLower) - (pNoLower * pNoLower);
-		}
+			if (yes + no == 0)
+				return 0.0;
+			double pYes = static_cast<double>(yes) / (yes + no);
+			double pNo = 1.0 - pYes;
+			return 1.0 - (pYes * pYes) - (pNo * pNo);
+		};
 
-		if (upperCount > 0)
-		{
-			double pYesUpper = static_cast<double>(yesCountUpper) / upperCount;
-			double pNoUpper = static_cast<double>(noCountUpper) / upperCount;
-			upperImpurity = 1.0 - (pYesUpper * pYesUpper) - (pNoUpper * pNoUpper);
-		}
+		int lowerCount = yesCountLower + noCountLower, upperCount = yesCountUpper + noCountUpper;
 
 		// Calculate weighted impurity (based on partition sizes)
-		double weightedImpurity = (static_cast<double>(lowerCount) / overallCount) * lowerImpurity +
-								  (static_cast<double>(upperCount) / overallCount) * upperImpurity;
+		double weightedImpurity = (static_cast<double>(lowerCount) / overallCount) * giniImpurity(yesCountLower, noCountLower) +
+								  (static_cast<double>(upperCount) / overallCount) * giniImpurity(yesCountUpper, noCountUpper);
 
 		// set belowMajority and aboveMajority above based on counts
 		int majorityAbove = yesCountUpper > noCountUpper ? 1 : 0;
