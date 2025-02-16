@@ -96,10 +96,21 @@ double weightedImpurity = (static_cast<double>(lowerCount) / overallCount) * low
                           (static_cast<double>(upperCount) / overallCount) * upperImpurity;
 
 I did this for many of my functions to get the syntax correct. ChatGPT also noticed the occasional error in my code 
-which was certainly helpful. 
+which was certainly helpful. (like above it realized I used an int when I should've used a double)
 
 Used GPT to help me understand how to handle the base case of trainSubtree. I knew it would be
 when we had no more data to split on but was unsure how to implement
 
-When testing on my code I came across some instances where I should have used doubles when I used ints. ChatGPT was 
+When testing on my code I came across some compiliation errors. ChatGPT was 
 able to help me decipher errors in the tests to figure that out.
+
+Finishing: I think I was able to get around 90% of the logic and code written but I still had a
+couple of failing test cases. One of them revolved around not considering a node with a right child
+but not a left child in my classification. The other was an error about passing by reference instead
+of value which caused my data and outcomes to be out of sync. Although ChatGPT wasn't able to tell me
+where my code was incorect is seriously helped me create a framework of logging outputs to identify 
+where these problems occured.
+
+Overall I really enjoyed this project as it was a fun way to applied knowledge we have learned to
+an actual implementation. I saw this project as fun challange and it was able to make me think in 
+a way that was guided and not frustrating, which was good.
